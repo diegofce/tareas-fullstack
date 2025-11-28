@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Crear una nueva tarea</h2>
+
+  {{ form.non_field_errors }}
+
+  <form action="{% url 'create_task' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Task</button>
+  </form>
+{% endblock %}

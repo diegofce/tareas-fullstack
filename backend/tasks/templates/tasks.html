@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Lista de tareas pendientes</h1>
+
+    <ul>
+    {% for task in tasks %}
+        <li>
+            <p><strong>Tarea creada por el usuario:</strong> {{ user.username }}</p>
+
+            <a href="{% url 'task_detail' task.id %}">
+                {% if task.important %}
+                    <h3 style="color:red;">⚡ {{ task.title }}</h3>
+                {% else %}
+                    <h3>{{ task.title }}</h3>
+                {% endif %}
+            </a>
+
+            <p><strong>Descripción:</strong> {{ task.description }}</p>
+            <p><strong>Fecha de creación:</strong> {{ task.created|date:"M d, Y H:i" }}</p>
+
+            {% if task.date_completed %}
+                <p><strong>Finalizada el:</strong> {{ task.date_completed|date:"M d, Y H:i" }}</p>
+            {% endif %}
+        </li>
+    {% empty %}
+        <p>No hay tareas disponibles.</p>
+    {% endfor %}
+    </ul>
+{% endblock %}
