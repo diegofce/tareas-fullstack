@@ -1,4 +1,3 @@
-// ...existing code...
 # Sistema de Gestión de Tareas – Prueba Técnica
 
 Aplicación full-stack ligera, construida con Django + DjangoRestFramework (renderizado por servidor). Esta copia refleja la estructura real del proyecto en esta carpeta.
