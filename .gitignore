@@ -9,15 +9,11 @@ node_modules/
 dist/
 
 # env
+.env
 *.env
 
 # OS
 .DS_Store
 
-
 backend/venv/
 frontend/node_modules/
-*.pyc
-__pycache__/
-db.sqlite3
-.env
