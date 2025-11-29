@@ -3,32 +3,46 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
-# ----------------------------
+# --------------------------------
 # PATHS
-# ----------------------------
+# --------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ----------------------------
-# ENV CONFIG
-# (Solo carga .env en local)
-# ----------------------------
-DEBUG = os.getenv("DEBUG", "True") == "True"
+# --------------------------------
+# ENVIRONMENT
+# --------------------------------
+# DEBUG debe venir desde Render (variable DEBUG=False)
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-# Cargar .env SOLO en desarrollo
+# Cargar .env solo en desarrollo local
 if DEBUG and os.path.exists(BASE_DIR / ".env"):
     load_dotenv()
 
+# --------------------------------
+# SECRET KEY
+# --------------------------------
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")
 
-# ----------------------------
-# SECRET KEY / DEBUG
-# ----------------------------
-SECRET_KEY = os.getenv("SECRET_KEY", "clave-fallback")
+# --------------------------------
+# ALLOWED HOSTS
+# --------------------------------
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    os.getenv("RENDER_EXTERNAL_HOSTNAME", ""),   # Render autogenera host
+]
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+RENDER = os.environ.get('RENDER', None)
 
-# ----------------------------
+# Agregar el hostname generado automáticamente por Render
+if RENDER:
+    hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+    if hostname:
+        ALLOWED_HOSTS.append(hostname)
+        
+# --------------------------------
 # APPS
-# ----------------------------
+# --------------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,9 +89,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tareas.wsgi.application'
 
-# ----------------------------
-# DATABASE CONFIG
-# ----------------------------
+# --------------------------------
+# DATABASE
+# --------------------------------
+# Render te provee DATABASE_URL automáticamente
 DATABASES = {
     "default": dj_database_url.config(
         default="postgres://tareas_db:administrador@localhost:5432/tareas_dbp",
@@ -85,9 +100,13 @@ DATABASES = {
     )
 }
 
-# ----------------------------
+# Require SSL solo en producción
+if not DEBUG:
+    DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
+
+# --------------------------------
 # PASSWORD VALIDATION
-# ----------------------------
+# --------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -95,25 +114,23 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ----------------------------
-# INTERNATIONALIZATION
-# ----------------------------
+# --------------------------------
+# TIMEZONE
+# --------------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 USE_TZ = True
 
-# ----------------------------
+# --------------------------------
 # STATIC FILES
-# ----------------------------
-STATIC_URL = '/static/'
+# --------------------------------
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# ----------------------------
+# --------------------------------
 # REST FRAMEWORK
-# ----------------------------
+# --------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -124,8 +141,8 @@ REST_FRAMEWORK = {
     "UNAUTHENTICATED_USER": None,
 }
 
-# ----------------------------
+# --------------------------------
 # CORS
-# ----------------------------
+# --------------------------------
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
