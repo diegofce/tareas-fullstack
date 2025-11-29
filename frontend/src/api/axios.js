@@ -2,6 +2,8 @@ import axios from "axios";
 
 export const API_URL = import.meta.env.VITE_API_URL;
 
+console.log("🌐 API_URL cargada:", API_URL); 
+/* En el backend se usaria https://tareas-fullstack.onrender.com */
 
 
 const api = axios.create({
