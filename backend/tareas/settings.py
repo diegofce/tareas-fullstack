@@ -14,8 +14,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ----------------------------
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
-if DEBUG:
+# Cargar .env SOLO en desarrollo
+if DEBUG and os.path.exists(BASE_DIR / ".env"):
     load_dotenv()
+
 
 # ----------------------------
 # SECRET KEY / DEBUG
