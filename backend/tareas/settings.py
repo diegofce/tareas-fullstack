@@ -4,19 +4,25 @@ import dj_database_url
 from dotenv import load_dotenv
 
 # ----------------------------
-# ENV CONFIG
+# PATHS
 # ----------------------------
-load_dotenv()  # Lee variables del archivo .env
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ----------------------------
+# ENV CONFIG
+# (Solo carga .env en local)
+# ----------------------------
+DEBUG = os.getenv("DEBUG", "True") == "True"
+
+if DEBUG:
+    load_dotenv()
 
 # ----------------------------
 # SECRET KEY / DEBUG
 # ----------------------------
 SECRET_KEY = os.getenv("SECRET_KEY", "clave-fallback")
-DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 # ----------------------------
 # APPS
@@ -78,7 +84,7 @@ DATABASES = {
 }
 
 # ----------------------------
-# PASSWORDS
+# PASSWORD VALIDATION
 # ----------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -87,6 +93,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# ----------------------------
+# INTERNATIONALIZATION
+# ----------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
@@ -117,3 +126,4 @@ REST_FRAMEWORK = {
 # CORS
 # ----------------------------
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
